@@ -1,52 +1,72 @@
-import { fetchReview } from 'components/services/API';
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { Loader } from 'components/Loader/Loader';
+import Loader from "components/Loader";
+import { useRef, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { fetchReviews } from "Services/Services";
+import { Author, Descriptions, Message, ReviewsLi } from "./Reviews.styled";
 
 const Reviews = () => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(false);
-
+  const [error, setError] = useState(null);
   const { movieId } = useParams();
+  const abortController = useRef();
 
   useEffect(() => {
-    const getCast = async () => {
+    const getReviewsDetails = async () => {
       try {
+        if (abortController.current) {
+          abortController.current.abort();
+        }
+
+        abortController.current = new AbortController();
+
         setLoading(true);
-        const response = await fetchReview(movieId);
-        setReviews(response.data.results);
+        setError(null);
+
+        const reviewsDetails = await fetchReviews({
+          movieId: movieId,
+          signal: abortController.current.signal,
+        });
+
+        setReviews(reviewsDetails);
+        setError(null);
       } catch (error) {
-        console.log(error);
+        if (error.code !== "ERR_CANCELED") {
+          setError("Sorry, an error occurred :( Try reloading the page!");
+          setLoading(false);
+        }
       } finally {
         setLoading(false);
       }
     };
-    getCast();
+
+    getReviewsDetails();
   }, [movieId]);
 
-  // useEffect(() => {
-  //   window.scrollBy({
-  //     top: 200 * 2,
-  //     behavior: 'smooth',
-  //   });
-  // }, [reviews]);
-
   return (
-    <>
+    <div>
       {loading && <Loader />}
-      <ul>
-        {reviews.length > 0 ? (
-          reviews.map(({ author, content, id }) => (
-            <li key={id}>
-              <h4>Author: {author}</h4>
-              <p>{content}</p>
-            </li>
-          ))
-        ) : (
-          <p>We don't have any reviews for this movie.</p>
-        )}
-      </ul>
-    </>
+      {!loading && reviews.length > 0 && (
+        <div>
+          <ul>
+            {reviews.map(({ id, author, content }) => (
+              <ReviewsLi key={id}>
+                <Author>Author: {author}</Author>
+                <Descriptions>Description: {content}</Descriptions>
+              </ReviewsLi>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {!loading && reviews.length === 0 && (
+        <Message>
+          Sorry, there are no reviews for this movie yet :(
+        </Message>
+      )}
+
+      {error && <div>{error.message}</div>}
+    </div>
   );
 };
 

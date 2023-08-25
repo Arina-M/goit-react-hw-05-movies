@@ -1,69 +1,69 @@
-import { fetchCast } from 'components/services/API';
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { List } from './Cast.styled';
-import { Loader } from 'components/Loader/Loader';
-import { run as runHolder } from 'holderjs';
+import Loader from "components/Loader";
+import { useEffect, useState, useRef } from "react";
+import { useParams } from "react-router-dom";
+import { fetchCast } from "Services/Services";
+import placeholderImage from "../../imgPlaceholder/1647644742_22-amiel-club-p-siluet-cheloveka-kartinki-24.png";
+import { CastList, DetailsBox, NameActor, Popular, Role } from "./Cast.styled";
+
 
 const Cast = () => {
-  const [cast, setCast] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const { movieId } = useParams();
-  useEffect(() => {
-    const getCast = async () => {
-      try {
-        setLoading(true);
-        const response = await fetchCast(movieId);
-        setCast(response.data.cast);
-      } catch (error) {
-        console.log(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    getCast();
-  }, [movieId]);
+    const [cast, setCast] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const { movieId } = useParams();
+    const abortController = useRef();
 
-  useEffect(() => {
-    runHolder('holder');
-  });
+    useEffect(() => {
+        const getCastDetails = async () => {
+            try {
+                if(abortController.current){
+                    abortController.current.abort();
+                }
 
-  // useEffect(() => {
-  //   window.scrollBy({
-  //     top: 200 * 2,
-  //     behavior: 'smooth',
-  //   });
-  // }, [cast]);
+                abortController.current = new AbortController();
 
-  return (
-    <>
-      {loading && <Loader />}
-      <List>
-        {cast.map(({ character, name, profile_path, id }) => (
-          <li key={id}>
-            {profile_path ? (
-              <img
-                width="200"
-                height="300"
-                src={`https://image.tmdb.org/t/p/w200${profile_path}`}
-                alt={name}
-              />
-            ) : (
-              <img
-                className="holder"
-                width="200"
-                height="300"
-                data-src="holder.js/200x300?bg=#483d8b&text=There is no image yet..."
-                alt="holder"
-              />
-            )}
-            <p>Name: {name}</p>
-            <p>Character: {character}</p>
-          </li>
-        ))}
-      </List>
-    </>
-  );
-};
+                setLoading(true);
+                setError(null);
+
+                const castDetails = await fetchCast({
+                    movieId: movieId,
+                    signal: abortController.current.signal
+                });
+
+                setCast(castDetails);
+                setError(null);
+            } catch (error) {
+                if (error.code !== 'ERR_CANCELED') {
+                    setError("Sorry, an error occurred :( Try reloading the page!");
+                    setLoading(false);
+                }
+            } finally {
+                setLoading(false);
+            } 
+        };
+        getCastDetails();
+    }, [movieId]);
+
+
+
+    return (
+        <div>
+            {loading && <Loader />}
+            {cast && <CastList>
+                        {cast.map(({ id, name, character, original_name, profile_path, popularity }) => (
+                            <li key={id}>
+                                <img src={profile_path ? `https://image.tmdb.org/t/p/w500${profile_path}` : placeholderImage} alt={name} width={170}/>
+                                <DetailsBox>
+                                    <NameActor>{original_name}</NameActor>
+                                    <Role>Role: {character}</Role>
+                                    <Popular>Actor's popularity: {popularity}</Popular>
+                                </DetailsBox>
+                            </li>
+                        ))}
+                    </CastList>}
+            {error && <div>{error.message}</div> }
+        </div>
+    )
+}
 
 export default Cast;

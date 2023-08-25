@@ -1,21 +1,17 @@
-import { BallTriangle } from 'react-loader-spinner';
-import { Backdrop, WrapperForLoader } from './Loader.styled';
+import { Hearts } from "react-loader-spinner";
 
-export const Loader = () => {
-  return (
-    <Backdrop>
-        <WrapperForLoader>
-      <BallTriangle
-        height={100}
-        width={100}
-        radius={5}
-        color="#6c4da9"
-        ariaLabel="ball-triangle-loading"
-        wrapperClass={{}}
-        wrapperStyle=""
+const Loader = () => {
+    return (
+        <Hearts 
+        height="80"
+        width="100"
+        color="#483d8b"
+        ariaLabel="-loading"
+        wrapperStyle={{}}
+        wrapperClass=""
         visible={true}
-      />
-      </WrapperForLoader>
-    </Backdrop>
-  );
-};
+        />
+    )
+}
+
+export default Loader;
