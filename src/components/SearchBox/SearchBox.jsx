@@ -1,7 +1,6 @@
 import { useSearchParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import { Form, Formik } from 'formik';
-// import { RiMovie2Line } from 'react-icons/ri';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { BoxForm, BtnSearch, Input } from './SearchBox.styled';

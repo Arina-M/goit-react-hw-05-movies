@@ -1,9 +1,8 @@
 import { Outlet, Link } from "react-router-dom";
-// import { BiSolidCameraMovie } from 'react-icons/bi';
 import { Suspense } from "react";
 import Loader from "components/Loader";
 import { BoxNav, Container, Header, LinkButton } from "./SharedLayout.styled";
-// import { RiHomeHeartFill, RiMovie2Line } from 'react-icons/ri';
+
 
 const SharedLayout = () => {
     return(
