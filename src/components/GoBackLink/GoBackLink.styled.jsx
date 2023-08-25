@@ -6,6 +6,7 @@ export const ContainerBack = styled.div`
     justify-content: flex-start;
     gap: 40px;
     margin-bottom: 20px;
+    margin-top: 20px
 `;
 
 export const GoBack = styled.button`
@@ -21,7 +22,7 @@ export const GoBack = styled.button`
     font-size: 22px;
     cursor: pointer;
     border-radius: 30px;
-    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.4);
+    box-shadow: 0px 6px 5px rgba(0, 0, 0, 0.4);
 
     &:hover{
         background-color: #f68943;
@@ -35,5 +36,5 @@ export const GoBack = styled.button`
 
 export const Detailed = styled.h2`
     font-size: 32px;
-    color: #b31bb4;
+    color: #483d8b;
 `;

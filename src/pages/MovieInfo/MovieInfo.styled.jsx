@@ -5,6 +5,7 @@ export const PosterBox = styled.div`
     justify-content: space-evenly;
     gap: 20px;
     margin-bottom: 20px;
+    margin-top: 50px;
 `;
 
 export const NameMovie = styled.h2`
@@ -13,7 +14,7 @@ export const NameMovie = styled.h2`
     font-size: 25px;
     line-height: 1.2;
     letter-spacing: 0.02em;
-    color: #b31bb4;
+    color: #483d8b;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
 `;
 
@@ -23,7 +24,7 @@ export const Release = styled.h3`
     font-size: 20px;
     line-height: 1.2;
     letter-spacing: 0.02em;
-    color: #b31bb4;
+    color: #483d8b;
 `;
 
 export const Rating = styled.h4`
@@ -32,7 +33,7 @@ export const Rating = styled.h4`
     font-size: 20px;
     line-height: 1.2;
     letter-spacing: 0.02em;
-    color: #b31bb4;
+    color: #483d8b;
 `;
 
 export const GenresList = styled.ul`
@@ -46,7 +47,7 @@ export const Overview = styled.h2`
     font-size: 25px;
     line-height: 1.2;
     letter-spacing: 0.02em;
-    color: #b31bb4;
+    color: #483d8b;
     text-align: center;
 `;
 
@@ -55,7 +56,7 @@ export const GenresItem = styled.li`
     font-weight: 400;
     font-size: 16px;
     line-height: 1.2;
-    color: #b31bb4;
+    color: #483d8b;
 `;
 
 export const TextReview = styled.p`
@@ -64,5 +65,5 @@ export const TextReview = styled.p`
     font-size: 20px;
     line-height: 1.2;
     letter-spacing: 0.02em;
-    color: #b31bb4;
+    color: #483d8b;
 `;

@@ -55,7 +55,7 @@ export const NameActor = styled.h3`
     font-size: 20px;
     line-height: 1.2;
     letter-spacing: 0.02em;
-    color: #b31bb4;
+    color: #483d8b;
 `;
 
 export const Role = styled.h4`
@@ -64,7 +64,7 @@ export const Role = styled.h4`
     font-size: 18px;
     line-height: 1.2;
     letter-spacing: 0.02em;
-    color: #b31bb4;
+    color: #483d8b;
 `;
 
 export const Popular = styled.p`
@@ -73,5 +73,5 @@ export const Popular = styled.p`
     font-size: 16px;
     line-height: 1.2;
     letter-spacing: 0.02em;
-    color: #b31bb4;
+    color: #483d8b;
 `;
