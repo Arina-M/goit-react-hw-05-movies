@@ -1,31 +1,30 @@
-import { Link, useLocation } from "react-router-dom";
-import { ContainerDescription, Data, GalleryMovies, Language, MovieItem, OriginalTitle } from "./MoviesList.styled";
-import placeholderImage from "../../imgPlaceholder/imgPlaceholder.png";
+import PropTypes from 'prop-types';
+import MovieCard from 'components/MovieCard/MovieCard';
+import { MovieList } from './MoviesList.styled';
 
-const MoviesList = ({ movies }) => {
-    const location = useLocation();
-  
-    return (
-      <GalleryMovies>
-        {movies.map(({ id, poster_path, original_language, title, release_date, original_title }) => (
-          <MovieItem key={id}>
-            <Link to={`/movies/${id}`} state={{ from: location }}>
-              <img 
-              src={poster_path ? `https://image.tmdb.org/t/p/w500${poster_path}` : placeholderImage} 
-              alt={title} 
-              width="220"
-              />
-            <ContainerDescription>
-              <OriginalTitle>{original_title}</OriginalTitle>
-              <Language>Original language: {original_language}</Language>
-              <Data>Release date: {release_date}</Data>
-            </ContainerDescription>
-            </Link>
-          </MovieItem>
-        ))}
-      </GalleryMovies>
-    );
-  };
-  
+export default function MoviesList({ movies, state }) {
+  return (
+    <MovieList>
+      {movies.map(({ id, title, poster, voteAverage, name }) => (
+        <MovieCard
+          key={id}
+          id={id}
+          name={name}
+          title={title}
+          poster={poster}
+          voteAverage={voteAverage}
+          state={state}
+        />
+      ))}
+    </MovieList>
+  );
+}
 
-export default MoviesList;
+MoviesList.propTypes = {
+  movies: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number.isRequired,
+    })
+  ).isRequired,
+  state: PropTypes.string,
+};

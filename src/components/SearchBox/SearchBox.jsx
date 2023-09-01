@@ -1,58 +1,42 @@
-import { useSearchParams } from 'react-router-dom';
-import { useEffect } from 'react';
-import { Form, Formik } from 'formik';
+import PropTypes from 'prop-types';
+import { SearchForm, SearchInput, SearchIcon } from './SearchBox.styled';
+import { useState } from 'react';
 import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import { BoxForm, BtnSearch, Input } from './SearchBox.styled';
 
-export default function SearchBar({ onChange }) {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const movieName = searchParams.get('queryMovie') ?? '';
+export default function SearchBox({ onUrlChange }) {
+  const [searchQuery, setSearchQuery] = useState('');
 
-  const initialValue = {
-    queryMovie: movieName,
+  const handleSearchChange = event => {
+    setSearchQuery(event.currentTarget.value.toLowerCase());
   };
 
-  useEffect(() => {
-    if (!movieName) {
+  const formSubmit = event => {
+    event.preventDefault();
+    if (searchQuery.trim() === '') {
+      toast.error('Request field is empty', {
+        icon: '☣️',
+      });
       return;
     }
-
-    onChange(movieName);
-  }, [movieName, onChange]);
-
-  const handleSearchForm = (values, { resetForm }) => {
-    const queryMovie = values.queryMovie.trim();
-  
-    if (queryMovie === '') {
-      toast.warning('Name is required');
-      return;
-    }
-  
-    if (queryMovie.includes(' ')) {
-      toast.warning('Name cannot contain spaces');
-      return;
-    }
-  
-    const searchQuery = { queryMovie };
-    setSearchParams(searchQuery);
-    onChange(queryMovie);
-    resetForm();
+    onUrlChange(searchQuery);
+    setSearchQuery('');
   };
-  
+
   return (
-    <Formik initialValues={initialValue} onSubmit={handleSearchForm}>
-      {({ handleSubmit, errors }) => (
-        <Form autoComplete="off" onSubmit={handleSubmit}>
-          <BoxForm>
-            <Input type="text" name="queryMovie" autoFocus placeholder="Search movies" />
-            <BtnSearch type="submit">
-              <span>Search</span>
-            </BtnSearch>
-          </BoxForm>
-          {errors.queryMovie && toast.error(errors.queryMovie.message)}
-        </Form>
-      )}
-    </Formik>
+    <SearchForm onSubmit={formSubmit}>
+      <SearchIcon />
+      <SearchInput
+        autocomplete="off"
+        autoFocus
+        placeholder="find"
+        type="text"
+        value={searchQuery}
+        onChange={handleSearchChange}
+      />
+    </SearchForm>
   );
 }
+
+SearchBox.propTypes = {
+  onUrlChange: PropTypes.func.isRequired,
+};

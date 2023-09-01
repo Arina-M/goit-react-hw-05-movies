@@ -1,73 +1,44 @@
-import Loader from "components/Loader";
-import { useRef, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import { fetchReviews } from "Services/Services";
-import { Author, Descriptions, Message, ReviewsLi } from "./Reviews.styled";
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { getMovieReviews } from 'api/getMovieReviews';
+import { Container } from 'components/Container/Container.styled';
+import { ThreeDots } from 'react-loader-spinner';
+import ReviewsList from 'components/ReviewsList/ReviewsList';
 
-const Reviews = () => {
-  const [reviews, setReviews] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+export default function Reviews() {
   const { movieId } = useParams();
-  const abortController = useRef();
-
+  const [reviews, setReviews] = useState([]);
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
-    const getReviewsDetails = async () => {
+    setIsLoading(true);
+    async function getReviewsData() {
       try {
-        if (abortController.current) {
-          abortController.current.abort();
-        }
-
-        abortController.current = new AbortController();
-
-        setLoading(true);
-        setError(null);
-
-        const reviewsDetails = await fetchReviews({
-          movieId: movieId,
-          signal: abortController.current.signal,
+        const reviewsDataForList = [];
+        const response = await getMovieReviews(movieId);
+        response.map(({ id, author, content }) => {
+          const oneReviewData = { id, author, content };
+          return reviewsDataForList.push(oneReviewData);
         });
-
-        setReviews(reviewsDetails);
-        setError(null);
+        setReviews(reviewsDataForList);
       } catch (error) {
-        if (error.code !== "ERR_CANCELED") {
-          setError("Sorry, an error occurred :( Try reloading the page!");
-          setLoading(false);
-        }
+        setError(error);
       } finally {
-        setLoading(false);
+        setIsLoading(false);
       }
-    };
-
-    getReviewsDetails();
+    }
+    getReviewsData();
   }, [movieId]);
 
   return (
-    <div>
-      {loading && <Loader />}
-      {!loading && reviews.length > 0 && (
-        <div>
-          <ul>
-            {reviews.map(({ id, author, content }) => (
-              <ReviewsLi key={id}>
-                <Author>Author: {author}</Author>
-                <Descriptions>Description: {content}</Descriptions>
-              </ReviewsLi>
-            ))}
-          </ul>
-        </div>
+    <Container>
+      {isLoading && <ThreeDots color="#3f51b5" />}
+      {error && <h2>Data processing error. Try reloading the page.</h2>}
+      {reviews.length > 0 ? (
+        <ReviewsList arrayOfReviews={reviews} />
+      ) : (
+        <p>There is no reviews on this movie</p>
       )}
-
-      {!loading && reviews.length === 0 && (
-        <Message>
-          Sorry, there are no reviews for this movie yet :(
-        </Message>
-      )}
-
-      {error && <div>{error.message}</div>}
-    </div>
+    </Container>
   );
-};
-
-export default Reviews;
+}
