@@ -2,7 +2,7 @@ import { Container } from 'components/Container/Container.styled';
 import SearchBox from 'components/SearchBox/SearchBox';
 import { toast } from 'react-toastify';
 import { useState, useEffect } from 'react';
-import { useSearchParams, useLocation } from 'react-router-dom';
+import { useSearchParams, useLocation, useNavigate } from 'react-router-dom';
 import { getSearchMovies } from 'api/getSearchMovies';
 import MoviesList from 'components/MoviesList/MoviesList';
 import { ThreeDots } from 'react-loader-spinner';
@@ -14,6 +14,9 @@ export default function Movies() {
   const [foundMovies, setFoundMovies] = useState([]);
   const searchQuery = searchParams.get('query') ?? '';
   const location = useLocation();
+
+
+  const navigate = useNavigate();
 
   const changeUrlParams = value => {
     setSearchParams(value !== '' ? { query: value } : {});
@@ -34,6 +37,7 @@ export default function Movies() {
           });
           setSearchParams(prevSearchParams => (prevSearchParams = {}));
           setFoundMovies(prevFoundMovies => (prevFoundMovies = []));
+          navigate('/');
           return;
         }
         response.map(
