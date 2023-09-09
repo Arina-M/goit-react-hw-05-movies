@@ -5,7 +5,7 @@ import GlobalStyles from './GlobalStyles';
 import { MovieApp } from './App.styled';
 import Header from './Header/Header';
 import Home from 'pages/Home';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate} from 'react-router-dom';
 
 const Movies = lazy(() => import('../pages/Movies'));
 const MovieDetails = lazy(() => import('../pages/MovieDetails'));
@@ -13,6 +13,8 @@ const Cast = lazy(() => import('./Cast/Cast'));
 const Reviews = lazy(() => import('./Reviews/Reviews'));
 
 export default function App() {
+
+
   return (
     <MovieApp>
       <Header />
@@ -25,7 +27,7 @@ export default function App() {
             <Route path="reviews" element={<Reviews />} />
           </Route>
           <Route />
-          <Route path="*" element={<Home />} />
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Suspense>
       <GlobalStyles />
